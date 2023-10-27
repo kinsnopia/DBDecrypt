@@ -9,17 +9,7 @@ import kotlin.system.exitProcess
 
 fun main() {
     val dir = getLocalAppDataDirectory()
-    val dbDir = "$dir\\umag-pos-info.db"
-    val copyDir = "$dir\\umag-pos-info-unlocked.db"
-    if (File(dbDir).exists()) {
-        try {
-            Files.copy(Paths.get(dbDir), Paths.get(copyDir))
-        } catch (e: Exception) {
-            println(e)
-        }
-    } else {
-        exitProcess(2)
-    }
+    createUnlockedFile(dir)
     val password = "123qwe123"
     val newPassword = ""
     try {
@@ -35,7 +25,7 @@ fun main() {
     }
 }
 
-fun getLocalAppDataDirectory(): String {
+private fun getLocalAppDataDirectory(): String {
     val path: String = if (System.getProperty("os.name").uppercase().contains("WIN")) {
         System.getenv("LOCALAPPDATA")
     } else {
@@ -51,4 +41,19 @@ fun getLocalAppDataDirectory(): String {
         }
     }
     return directoryName
+}
+
+private fun createUnlockedFile(dir: String) {
+    val dbDir = "$dir\\umag-pos-info.db"
+    val copyDir = "$dir\\umag-pos-info-unlocked.db"
+    if (File(dbDir).exists()) {
+        try {
+            Files.copy(Paths.get(dbDir), Paths.get(copyDir))
+        } catch (e: Exception) {
+            println(e)
+            exitProcess(3)
+        }
+    } else {
+        exitProcess(2)
+    }
 }
